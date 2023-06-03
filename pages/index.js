@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <main>
       <Link href="/create">
-        <a>Create Blog</a>
+        <p>create</p>
       </Link>
     </main>
   );

@@ -1,4 +1,21 @@
 import { MongoClient } from "mongodb";
+import Cors from "cors";
+
+const cors = Cors({
+  origin: "*", // Replace with the origin(s) you want to allow
+  methods: ["GET", "POST"], // Add the HTTP methods you want to allow
+});
+
+function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+}
 
 async function connectToDatabase() {
   const client = await MongoClient.connect(
@@ -12,6 +29,8 @@ async function connectToDatabase() {
 }
 
 export default async function handler(req, res) {
+  await runMiddleware(req, res, cors); // Apply CORS middleware
+
   if (req.method === "GET") {
     const db = await connectToDatabase();
     const collection = db.collection("blog");
